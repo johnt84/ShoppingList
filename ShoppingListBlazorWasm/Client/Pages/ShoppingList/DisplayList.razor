@@ -1,0 +1,110 @@
+﻿@page "/shoppinglist/displaylist"
+@using ShoppingListBlazorWasm.Shared
+@inject HttpClient Http
+
+<h3>Shopping List - @shoppingDate.ToString("dd-MMM-yyyy")</h3>
+
+<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
+    <a href="@($"/shoppinglistitem/additem")" class="esh-link-item">
+        Create
+    </a>
+</div>
+
+@if (shoppingListItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!shoppingListItems.Any())
+{
+    <p><em>There are currently no shopping list items</em></p>
+}
+else
+{
+    <table>
+        <tr>
+            <th>
+                Item
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Qty
+            </th>
+            <th>
+                Picked
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (var shoppingListItem in shoppingListItems)
+        {
+    <tr style="@(shoppingListItem.ItemPicked ? "text-decoration: line-through" : "")">
+        <td>
+            @shoppingListItem.Name
+        </td>
+        <td>
+            @shoppingListItem.Price
+        </td>
+        <td>
+            @shoppingListItem.Quantity
+        </td>
+        <td>
+            @if (shoppingListItem.ItemPicked)
+            {
+                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.Name))" checked />
+            }
+            else
+            {
+                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.Name))" />
+            }
+        </td>
+        <td>
+            <a href="@($"shoppinglist/displayitem/{shoppingListItem.Name}")" class="esh-table-link">
+                Display
+            </a>
+        </td>
+        <td>
+            <a href="@($"shoppinglist/edititem/{shoppingListItem.Name}")" class="esh-table-link">
+                Edit
+            </a>
+        </td>
+        <td>
+            <a href="@($"shoppinglist/deleteitem/{shoppingListItem.Name}")" class="esh-table-link">
+                Delete
+            </a>
+        </td>
+    </tr>
+        }
+    </table>
+}
+
+@code {
+    private DateTime shoppingDate = new DateTime();
+
+    protected List<ShoppingListItem> shoppingListItems;
+    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+
+    protected override async Task OnInitializedAsync()
+    {
+        shoppingListItems = await Http.GetFromJsonAsync<List<ShoppingListItem>>("ShoppingListItem");
+
+        if (shoppingListItems.Count > 0)
+        {
+            shoppingDate = shoppingListItems.First().ShoppingDate;
+        }
+    }
+
+    private async Task PickShoppingItem(string shoppingItemName)
+    {
+        var shoppingListItemToUpdate = shoppingListItems.First(x => x.Name == shoppingItemName);
+
+        if (shoppingListItemToUpdate != null)
+        {
+            shoppingListItemToUpdate.ItemPicked = !shoppingListItemToUpdate.ItemPicked;
+        }
+
+        var response = await Http.PutAsJsonAsync("ShoppingListItem", shoppingListItemToUpdate);
+    }
+}

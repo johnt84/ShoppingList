@@ -9,11 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList.iOS", "Shoppin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingList", "ShoppingList\ShoppingList\ShoppingList.csproj", "{3CFDCA5B-B846-4BAC-9CEA-667094530FEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingListBlazorWasm.Server", "ShoppingListBlazorWasm\Server\ShoppingListBlazorWasm.Server.csproj", "{C89B0B6E-016B-44DD-BAAD-AEC1671F12FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingListBlazorWasm.Server", "ShoppingListBlazorWasm\Server\ShoppingListBlazorWasm.Server.csproj", "{C89B0B6E-016B-44DD-BAAD-AEC1671F12FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingListBlazorWasm.Client", "ShoppingListBlazorWasm\Client\ShoppingListBlazorWasm.Client.csproj", "{A9C698E5-4F4F-4B75-A144-F2811049BEB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingListBlazorWasm.Client", "ShoppingListBlazorWasm\Client\ShoppingListBlazorWasm.Client.csproj", "{A9C698E5-4F4F-4B75-A144-F2811049BEB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingListBlazorWasm.Shared", "ShoppingListBlazorWasm\Shared\ShoppingListBlazorWasm.Shared.csproj", "{10BE9312-49A9-4742-BEA6-FCF587013A48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingListBlazorWasm.Shared", "ShoppingListBlazorWasm\Shared\ShoppingListBlazorWasm.Shared.csproj", "{10BE9312-49A9-4742-BEA6-FCF587013A48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

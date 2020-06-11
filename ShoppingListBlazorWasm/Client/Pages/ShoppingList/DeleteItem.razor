@@ -1,0 +1,67 @@
+﻿@page "/shoppinglist/deleteitem/{ShoppingListItemName}"
+
+@using ShoppingListBlazorWasm.Shared
+@inject HttpClient Http
+
+<h3>Delete Shpping Item</h3>
+
+<div class="container">
+    <div class="row">
+        <dl class="col-md-6 dl-horizontal">
+            <dt>
+                Name
+            </dt>
+
+            <dd>
+                @shoppingListItem.Name
+            </dd>
+
+            <dt>
+                Price
+            </dt>
+
+            <dd>
+                @shoppingListItem.Price
+            </dd>
+
+            <dt>
+                Qty
+            </dt>
+
+            <dd>
+                @shoppingListItem.Quantity
+            </dd>
+        </dl>
+    </div>
+
+    <div class="form-actions no-color esh-link-list">
+        <button class="btn esh-button esh-button-primary" @onclick="DeleteShoppingItem">
+            Delete
+        </button>
+        |
+        <a href="/shoppinglist/displaylist" class="esh-link-item">
+            Back to Overview
+        </a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string ShoppingListItemName { get; set; }
+
+    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var shoppingListItems = await Http.GetFromJsonAsync<List<ShoppingListItem>>("ShoppingListItem");
+        shoppingListItem = shoppingListItems.Where(x => x.Name == ShoppingListItemName).FirstOrDefault();
+    }
+
+    private async Task DeleteShoppingItem()
+    {
+        if (shoppingListItem != null)
+        {
+            var response = await Http.DeleteAsync($"ShoppingListItem/{ShoppingListItemName}");
+        }
+    }
+}

@@ -7,7 +7,7 @@ using System;
 namespace ShoppingListBlazorWasm.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ShoppingListItemController : ControllerBase
     {
         private readonly IShoppingListItemService _shoppingListItemService;
@@ -23,10 +23,10 @@ namespace ShoppingListBlazorWasm.Server.Controllers
             return _shoppingListItemService.Get();
         }
 
-        [HttpGet("{shoppingListItemID}")]
-        public ShoppingListItem Get(Guid shoppingListItemID)
+        [HttpGet("{ID}")]
+        public ShoppingListItem Get(Guid ID)
         {
-            return _shoppingListItemService.Get(shoppingListItemID);
+            return _shoppingListItemService.Get(ID);
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace ShoppingListBlazorWasm.Server.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{ID}")]
         public IActionResult Delete(Guid ID)
         {
             _shoppingListItemService.Delete(ID);

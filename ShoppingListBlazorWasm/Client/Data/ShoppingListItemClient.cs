@@ -10,6 +10,7 @@ namespace ShoppingListBlazorWasm.Client.Data
     public class ShoppingListItemClient
     {
         private readonly HttpClient _httpClient;
+        private static string SHOPPING_LIST_ITEM_API_URL = "api/ShoppingListItem";
 
         public ShoppingListItemClient(HttpClient client)
         {
@@ -17,28 +18,28 @@ namespace ShoppingListBlazorWasm.Client.Data
         }
 
         public async Task<List<ShoppingListItem>> GetShoppingListItems() =>
-            await _httpClient.GetFromJsonAsync<List<ShoppingListItem>>("ShoppingListItem");
+            await _httpClient.GetFromJsonAsync<List<ShoppingListItem>>(SHOPPING_LIST_ITEM_API_URL);
 
 
         public async Task<ShoppingListItem> GetShoppingListItem(Guid ID) =>
-            await _httpClient.GetFromJsonAsync<ShoppingListItem>($"ShoppingListItem/{ID}");
+            await _httpClient.GetFromJsonAsync<ShoppingListItem>($"{SHOPPING_LIST_ITEM_API_URL }/{ID}");
 
 
         public async Task CreateShoppingListItem(ShoppingListItem shoppingListItem)
         {
-            var response = await _httpClient.PostAsJsonAsync("ShoppingListItem", shoppingListItem);
+            var response = await _httpClient.PostAsJsonAsync(SHOPPING_LIST_ITEM_API_URL, shoppingListItem);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task UpdateShoppingListItem(ShoppingListItem shoppingListItem)
         {
-            var response = await _httpClient.PutAsJsonAsync("ShoppingListItem", shoppingListItem);
+            var response = await _httpClient.PutAsJsonAsync(SHOPPING_LIST_ITEM_API_URL, shoppingListItem);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteShoppingListItem(Guid ID)
         {
-            var response = await _httpClient.DeleteAsync($"ShoppingListItem{ID}");
+            var response = await _httpClient.DeleteAsync($"{SHOPPING_LIST_ITEM_API_URL}/{ID}");
             response.EnsureSuccessStatusCode();
         }
 

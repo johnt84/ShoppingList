@@ -127,10 +127,4 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\ShoppingList\ShoppingList.csproj">
-      <Project>{47919580-2636-4E15-9FE1-20C8645AF5A5}</Project>
-      <Name>ShoppingList</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

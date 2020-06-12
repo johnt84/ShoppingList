@@ -1,7 +1,8 @@
-﻿@page "/shoppinglist/displayitem/{ShoppingListItemName}"
+﻿@page "/shoppinglist/displayitem/{ID:guid}"
 
 @using ShoppingListBlazorWasm.Shared
-@inject HttpClient Http
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListItemClient Client
 
 <h3>Display Shpping Item</h3>
 
@@ -35,7 +36,7 @@
     </div>
 
     <div class="form-actions no-color esh-link-list">
-        <a href="@($"/shoppinglist/edititem/{shoppingListItem.Name}")" class="esh-link-item">
+        <a href="@($"/shoppinglist/edititem/{shoppingListItem.ID}")" class="esh-link-item">
             Edit Item
         </a>
         |
@@ -47,13 +48,12 @@
 
 @code {
     [Parameter]
-    public string ShoppingListItemName { get; set; }
+    public Guid ID { get; set; }
 
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {
-        var shoppingListItems = await Http.GetFromJsonAsync<List<ShoppingListItem>>("ShoppingListItem");
-        shoppingListItem = shoppingListItems.Where(x => x.Name == ShoppingListItemName).FirstOrDefault();
+        shoppingListItem = await Client.GetShoppingListItem(ID);
     }
 }

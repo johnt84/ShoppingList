@@ -1,11 +1,12 @@
 ﻿@page "/shoppinglist/displaylist"
 @using ShoppingListBlazorWasm.Shared
-@inject HttpClient Http
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListItemClient Client
 
 <h3>Shopping List - @shoppingDate.ToString("dd-MMM-yyyy")</h3>
 
 <div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
-    <a href="@($"/shoppinglistitem/additem")" class="esh-link-item">
+    <a href="@($"/shoppinglist/additem")" class="esh-link-item">
         Create
     </a>
 </div>
@@ -40,71 +41,66 @@ else
         </tr>
         @foreach (var shoppingListItem in shoppingListItems)
         {
-    <tr style="@(shoppingListItem.ItemPicked ? "text-decoration: line-through" : "")">
-        <td>
-            @shoppingListItem.Name
-        </td>
-        <td>
-            @shoppingListItem.Price
-        </td>
-        <td>
-            @shoppingListItem.Quantity
-        </td>
-        <td>
-            @if (shoppingListItem.ItemPicked)
-            {
-                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.Name))" checked />
-            }
-            else
-            {
-                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.Name))" />
-            }
-        </td>
-        <td>
-            <a href="@($"shoppinglist/displayitem/{shoppingListItem.Name}")" class="esh-table-link">
-                Display
-            </a>
-        </td>
-        <td>
-            <a href="@($"shoppinglist/edititem/{shoppingListItem.Name}")" class="esh-table-link">
-                Edit
-            </a>
-        </td>
-        <td>
-            <a href="@($"shoppinglist/deleteitem/{shoppingListItem.Name}")" class="esh-table-link">
-                Delete
-            </a>
-        </td>
-    </tr>
+            <tr style="@(shoppingListItem.ItemPicked || shoppingListItem.Quantity == 0 ? "text-decoration: line-through" : "")">
+                <td>
+                    @shoppingListItem.Name
+                </td>
+                <td>
+                    @shoppingListItem.Price
+                </td>
+                <td>
+                    @shoppingListItem.Quantity
+                </td>
+                <td>
+                    @if (shoppingListItem.ItemPicked)
+                    {
+                        <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ID))" checked />
+                    }
+                    else
+                    {
+                        <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ID))" />
+                    }
+                </td>
+                <td>
+                    <a href="@($"shoppinglist/displayitem/{shoppingListItem.ID}")" class="esh-table-link">
+                        Display
+                    </a>
+                </td>
+                <td>
+                    <a href="@($"shoppinglist/edititem/{shoppingListItem.ID}")" class="esh-table-link">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="@($"shoppinglist/deleteitem/{shoppingListItem.ID}")" class="esh-table-link">
+                        Delete
+                    </a>
+                </td>
+            </tr>
         }
     </table>
 }
 
 @code {
-    private DateTime shoppingDate = new DateTime();
+    private DateTime shoppingDate = DateTime.UtcNow;
 
     protected List<ShoppingListItem> shoppingListItems;
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {
-        shoppingListItems = await Http.GetFromJsonAsync<List<ShoppingListItem>>("ShoppingListItem");
-
-        if (shoppingListItems.Count > 0)
-        {
-            shoppingDate = shoppingListItems.First().ShoppingDate;
-        }
+        shoppingListItems = await Client.GetShoppingListItems();
     }
 
-    private async Task PickShoppingItem(string shoppingItemName)
+    private async Task PickShoppingItem(Guid ID)
     {
-        var shoppingListItemToUpdate = shoppingListItems.First(x => x.Name == shoppingItemName);
+        var shoppingListItemToUpdate = shoppingListItems.First(x => x.ID == ID);
 
         if (shoppingListItemToUpdate != null)
         {
             shoppingListItemToUpdate.ItemPicked = !shoppingListItemToUpdate.ItemPicked;
         }
 
-        var response = await Http.PutAsJsonAsync("ShoppingListItem", shoppingListItemToUpdate);
+        await Client.UpdateShoppingListItem(shoppingListItemToUpdate);
     }
 }

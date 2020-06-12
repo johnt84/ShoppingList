@@ -1,7 +1,9 @@
-﻿@page "/shoppinglist/deleteitem/{ShoppingListItemName}"
+﻿@page "/shoppinglist/deleteitem/{ID:guid}"
 
 @using ShoppingListBlazorWasm.Shared
-@inject HttpClient Http
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListItemClient Client
+@inject NavigationManager NavigationManager
 
 <h3>Delete Shpping Item</h3>
 
@@ -47,21 +49,21 @@
 
 @code {
     [Parameter]
-    public string ShoppingListItemName { get; set; }
+    public Guid ID { get; set; }
 
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {
-        var shoppingListItems = await Http.GetFromJsonAsync<List<ShoppingListItem>>("ShoppingListItem");
-        shoppingListItem = shoppingListItems.Where(x => x.Name == ShoppingListItemName).FirstOrDefault();
+        shoppingListItem = await Client.GetShoppingListItem(ID);
     }
 
     private async Task DeleteShoppingItem()
     {
         if (shoppingListItem != null)
         {
-            var response = await Http.DeleteAsync($"ShoppingListItem/{ShoppingListItemName}");
+            await Client.DeleteShoppingListItem(ID);
+            NavigationManager.NavigateTo("ShoppingList/DisplayList");
         }
     }
 }

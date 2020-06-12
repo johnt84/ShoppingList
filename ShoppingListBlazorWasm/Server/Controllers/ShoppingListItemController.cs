@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingListBlazorWasm.Server.Services;
 using ShoppingListBlazorWasm.Shared;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System;
 
 namespace ShoppingListBlazorWasm.Server.Controllers
 {
@@ -11,45 +10,28 @@ namespace ShoppingListBlazorWasm.Server.Controllers
     [Route("[controller]")]
     public class ShoppingListItemController : ControllerBase
     {
-        private List<ShoppingListItem> shoppingListItems = new List<ShoppingListItem>()
-        {
-            new ShoppingListItem()
-            {
-                Name = "Bananas",
-                Quantity = 1,
-                ShoppingDate = shoppingDate,
-            },
-            new ShoppingListItem()
-            {
-                Name = "Tomatoes",
-                Quantity = 1,
-                ShoppingDate = shoppingDate,
-            },
-            new ShoppingListItem()
-            {
-                Name = "Lettuce",
-                Quantity = 1,
-                ShoppingDate = shoppingDate,
-            },
-        };
-        private static DateTime shoppingDate = new DateTime(2020, 06, 11);
+        private readonly IShoppingListItemService _shoppingListItemService;
 
+        public ShoppingListItemController(IShoppingListItemService shoppingListItemService)
+        {
+            _shoppingListItemService = shoppingListItemService;
+        }
 
         [HttpGet]
         public List<ShoppingListItem> Get()
         {
-            return shoppingListItems;
+            return _shoppingListItemService.Get();
         }
 
-        public ShoppingListItem Get(string shoppingItemName)
+        public ShoppingListItem Get(Guid ID)
         {
-            return shoppingListItems.First(x => x.Name == shoppingItemName);
+            return _shoppingListItemService.Get(ID);
         }
 
         [HttpPost]
         public IActionResult Create(ShoppingListItem shoppingListItem)
         {
-            shoppingListItems.Add(shoppingListItem);
+            _shoppingListItemService.Add(shoppingListItem);
 
             return Ok();
         }
@@ -57,20 +39,15 @@ namespace ShoppingListBlazorWasm.Server.Controllers
         [HttpPut]
         public IActionResult Update(ShoppingListItem shoppingListItem)
         {
-            var shoppingListItemToUpdate = Get(shoppingListItem.Name);
-
-            if (shoppingListItemToUpdate != null)
-            {
-                shoppingListItemToUpdate = shoppingListItem;
-            }
+            _shoppingListItemService.Update(shoppingListItem);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(string shoppingItemName)
+        public IActionResult Delete(Guid ID)
         {
-            shoppingListItems.RemoveAll(x => x.Name == shoppingItemName);
+            _shoppingListItemService.Delete(ID);
 
             return Ok();
         }

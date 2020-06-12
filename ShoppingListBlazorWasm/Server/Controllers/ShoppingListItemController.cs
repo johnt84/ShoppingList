@@ -23,9 +23,10 @@ namespace ShoppingListBlazorWasm.Server.Controllers
             return _shoppingListItemService.Get();
         }
 
-        public ShoppingListItem Get(Guid ID)
+        [HttpGet("{shoppingListItemID}")]
+        public ShoppingListItem Get(Guid shoppingListItemID)
         {
-            return _shoppingListItemService.Get(ID);
+            return _shoppingListItemService.Get(shoppingListItemID);
         }
 
         [HttpPost]

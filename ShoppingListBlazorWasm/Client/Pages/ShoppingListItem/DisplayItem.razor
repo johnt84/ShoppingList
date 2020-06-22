@@ -1,11 +1,11 @@
-﻿@page "/shoppinglist/deleteitem/{ID:guid}"
+﻿@page "/shoppinglistitem/displayitem"
+@page "/shoppinglistitem/displayitem/{ShoppingListItemID:int}"
 
 @using ShoppingListBlazorWasm.Shared
 @using ShoppingListBlazorWasm.Client.Data
-@inject ShoppingListItemClient Client
-@inject NavigationManager NavigationManager
+@inject ShoppingListClient Client
 
-<h3>Delete Shpping Item</h3>
+<h3>Display Shopping Item</h3>
 
 <div class="container">
     <div class="row">
@@ -15,7 +15,7 @@
             </dt>
 
             <dd>
-                @shoppingListItem.Name
+                @shoppingListItem.ItemName
             </dd>
 
             <dt>
@@ -37,11 +37,11 @@
     </div>
 
     <div class="form-actions no-color esh-link-list">
-        <button class="btn esh-button esh-button-primary" @onclick="DeleteShoppingItem">
-            Delete
-        </button>
+        <a href="@($"/shoppinglistitem/edititem/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
+            Edit Item
+        </a>
         |
-        <a href="/shoppinglist/displaylist" class="esh-link-item">
+        <a href="/shoppinglistitem/displaylist" class="esh-link-item">
             Back to Overview
         </a>
     </div>
@@ -49,21 +49,12 @@
 
 @code {
     [Parameter]
-    public Guid ID { get; set; }
+    public int ShoppingListItemID { get; set; }
 
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {
-        shoppingListItem = await Client.GetShoppingListItem(ID);
-    }
-
-    private async Task DeleteShoppingItem()
-    {
-        if (shoppingListItem != null)
-        {
-            await Client.DeleteShoppingListItem(ID);
-            NavigationManager.NavigateTo("ShoppingList/DisplayList");
-        }
+        shoppingListItem = await Client.GetShoppingListItem(ShoppingListItemID);
     }
 }

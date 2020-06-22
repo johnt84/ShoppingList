@@ -1,59 +1,111 @@
-﻿using Newtonsoft.Json;
+﻿using Dapper;
 using ShoppingListBlazorWasm.Shared;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace ShoppingListBlazorWasm.Server.Services
 {
     public class ShoppingListItemService : IShoppingListItemService
     {
-        private readonly IFileService _fileService;
-        private List<ShoppingListItem> shoppingListItems;
+        private readonly SqlConnectionConfiguration _configuration;
 
-        public ShoppingListItemService(IFileService fileService)
+        private IDbConnection Connection => new SqlConnection(_configuration.Value);
+
+        public ShoppingListItemService(SqlConnectionConfiguration configuration)
         {
-            _fileService = fileService;
+            _configuration = configuration;
         }
 
-        public List<ShoppingListItem> Get()
+        public List<ShoppingListItem> Get(int shoppingListID)
         {
-            string json = _fileService.ReadFromFile();
-            return JsonConvert.DeserializeObject<List<ShoppingListItem>>(json);
+            using (IDbConnection connection = Connection)
+            {
+                connection.Open();
+                var shoppingListItems = connection.
+                                            Query<ShoppingListItem>(
+                                                "procShoppingListItemsGet",
+                                                new { shoppingListID },
+                                                commandType: CommandType.StoredProcedure).
+                                            ToList();
+
+
+                return shoppingListItems;
+            }
         }
 
-        public ShoppingListItem Get(Guid ID)
+        public ShoppingListItem GetItem(int shoppingListItemID)
         {
-            shoppingListItems = Get();
-            return shoppingListItems.First(x => x.ID == ID);
+            using (IDbConnection connection = Connection)
+            {
+                connection.Open();
+                var shoppingListItem = connection.
+                                            Query<ShoppingListItem>(
+                                                "procShoppingListItemsGet",
+                                                new { shoppingListItemID },
+                                                commandType: CommandType.StoredProcedure).
+                                            FirstOrDefault();
+
+
+                return shoppingListItem;
+            }
         }
 
         public void Add(ShoppingListItem shoppingListItem)
         {
-            shoppingListItems = Get();
+            using (IDbConnection connection = Connection)
+            {
+                string query = @"exec procShoppingListItemCreate 
+                                        @shoppingListID, 
+                                        @itemName, 
+                                        @price, 
+                                        @quantity, 
+                                        @itemPicked";
 
-            shoppingListItem.ID = Guid.NewGuid();
-            shoppingListItems.Add(shoppingListItem);
-
-            _fileService.SaveToFile(shoppingListItems);
+                try
+                {
+                    int newShoppingListItemID = connection.
+                                                    Query<int>(query, shoppingListItem).
+                                                    Single();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
         }
 
         public void Update(ShoppingListItem shoppingListItem)
         {
-            shoppingListItems = Get();
+            using (IDbConnection connection = Connection)
+            {
+                string query = @"exec procShoppingListItemUpdate 
+                                        @shoppingListItemID, 
+                                        @shoppingListID, 
+                                        @itemName, 
+                                        @price, 
+                                        @quantity, 
+                                        @itemPicked";
 
-            int updatedShoppingItemIndex = shoppingListItems.FindIndex(x => x.ID == shoppingListItem.ID);
-            shoppingListItems.RemoveAll(x => x.ID == shoppingListItem.ID);
-            shoppingListItems.Insert(updatedShoppingItemIndex, shoppingListItem);
-
-            _fileService.SaveToFile(shoppingListItems);
+                try
+                {
+                    connection.Query<int>(query, shoppingListItem);
+                }
+                catch (Exception ex)
+                {
+                }
+            }
         }
 
-        public void Delete(Guid ID)
+        public void Delete(int shoppingListItemID)
         {
-            shoppingListItems = Get();
-            shoppingListItems.RemoveAll(x => x.ID == ID);
-            _fileService.SaveToFile(shoppingListItems);
+            using (IDbConnection connection = Connection)
+            {
+                string query = "exec procShoppingListItemDelete @shoppingListItemID";
+
+                connection.Query<int>(query, new { shoppingListItemID = shoppingListItemID });
+            }
         }
     }
 }

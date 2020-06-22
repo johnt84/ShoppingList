@@ -1,0 +1,60 @@
+﻿@page "/shoppinglist/overview"
+@using ShoppingListBlazorWasm.Shared
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListClient Client
+
+<h3>Overview</h3>
+
+@if (shoppingLists == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!shoppingLists.Any())
+{
+    <p><em>There are currently no shopping lists</em></p>
+}
+else
+{
+    <table>
+        <tr>
+            <th>
+                Shopping Date
+            </th>
+            <th>
+                Date Created
+            </th>
+            <th>
+                Total Amount
+            </th>
+            <th>
+                Number of Items
+            </th>
+        </tr>
+        @foreach (var shoppingList in shoppingLists)
+        {
+        <tr>
+            <td>
+                @shoppingList.ShoppingDate.ToString("dd MMM yyyy")
+            </td>
+            <td>
+                @shoppingList.DateCreated
+            </td>
+            <td>
+                @shoppingList.TotalAmount
+            </td>
+            <td>
+                @shoppingList.NumberOfItems
+            </td>
+        </tr>
+        }
+    </table>
+}
+
+@code {
+    protected List<ShoppingList> shoppingLists;
+
+    protected override async Task OnInitializedAsync()
+    {
+        shoppingLists = await Client.GetShoppingLists();
+    }
+}

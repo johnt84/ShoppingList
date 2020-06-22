@@ -1,0 +1,94 @@
+﻿@page "/shoppinglistitem/additem/"
+@page "/shoppinglistitem/additem/{ShoppingListID:int}"
+
+@using ShoppingListBlazorWasm.Shared
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListClient Client
+@inject NavigationManager NavigationManager
+
+<h3>Add Shopping Item</h3>
+
+@if (shoppingLists == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="shoppingListItem" OnValidSubmit="@CreateShoppingItem">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Shopping List</label>
+            <div class="col-md-3">
+                <InputSelect @bind-Value="shoppingListItem.ShoppingListID" class="form-control">
+                    <option value="">Copy from</option>
+                    @foreach (var shoppingList in shoppingLists)
+                        {
+                        <option value="@shoppingList.ShoppingListID">@shoppingList.ShoppingDate.ToString("dd MMM yyyy")</option>
+                        }
+                </InputSelect>
+                <ValidationMessage For="(() => shoppingListItem.ShoppingListID)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Item</label>
+            <div class="col-md-3">
+                <InputText class="form-control" @bind-Value="shoppingListItem.ItemName" />
+                <ValidationMessage For="(() => shoppingListItem.ItemName)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Price</label>
+            <div class="col-md-3">
+                <InputNumber class="form-control" @bind-Value="shoppingListItem.Price" />
+                <ValidationMessage For="(() => shoppingListItem.Price)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Qty</label>
+            <div class="col-md-3">
+                <InputNumber class="form-control" @bind-Value="shoppingListItem.Quantity" />
+                <ValidationMessage For="(() => shoppingListItem.Quantity)" />
+            </div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+<div class="form-actions no-color esh-link-list" style="padding-top: 20px">
+    <a href="ShoppingListItem/DisplayList" class="esh-link-item">
+        Back to Shopping List
+    </a>
+</div>
+
+@code {
+    [Parameter]
+    public int ShoppingListID { get; set; }
+
+    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+    protected List<ShoppingList> shoppingLists;
+
+    protected override async Task OnInitializedAsync()
+    {
+        shoppingLists = await Client.GetShoppingLists();
+
+        if (ShoppingListID > 0)
+        {
+            var shoppingList = await Client.GetShoppingList(ShoppingListID);
+            shoppingListItem.ShoppingListID = shoppingList?.ShoppingListID ?? 0;
+        }
+    }
+
+    private async void CreateShoppingItem()
+    {
+        if (shoppingListItem != null)
+        {
+            await Client.CreateShoppingListItem(shoppingListItem);
+            NavigationManager.NavigateTo($"ShoppingListItem/DisplayList/{shoppingListItem.ShoppingListItemID}");
+        }
+    }
+}

@@ -1,11 +1,11 @@
-﻿@page "/shoppinglist/edititem/{ID:guid}"
+﻿@page "/shoppinglistitem/edititem/{ShoppingListItemID:int}"
 
 @using ShoppingListBlazorWasm.Shared
 @using ShoppingListBlazorWasm.Client.Data
-@inject ShoppingListItemClient Client
+@inject ShoppingListClient Client
 @inject NavigationManager NavigationManager
 
-<h3>Edit Shpping Item</h3>
+<h3>Edit Shopping Item</h3>
 
 <EditForm Model="shoppingListItem" OnValidSubmit="@EditShoppingItem">
     <DataAnnotationsValidator />
@@ -13,8 +13,8 @@
     <div class="form-group">
         <label class="control-label col-md-2">Item</label>
         <div class="col-md-3">
-            <InputText class="form-control" @bind-Value="shoppingListItem.Name" />
-            <ValidationMessage For="(() => shoppingListItem.Name)" />
+            <InputText class="form-control" @bind-Value="shoppingListItem.ItemName" />
+            <ValidationMessage For="(() => shoppingListItem.ItemName)" />
         </div>
     </div>
 
@@ -38,24 +38,24 @@
 </EditForm>
 
 <div class="form-actions no-color esh-link-list">
-    <a href="@($"/shoppinglist/displayitem/{shoppingListItem.ID}")" class="esh-link-item">
+    <a href="@($"/shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
         Display Item
     </a>
     |
-    <a href="/shoppinglist/displaylist" class="esh-link-item">
-        Back to Overview
+    <a href="/shoppinglistitem/displaylist" class="esh-link-item">
+        Back to Shopping List
     </a>
 </div>
 
 @code {
     [Parameter]
-    public Guid ID { get; set; }
+    public int ShoppingListItemID { get; set; }
 
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {
-        shoppingListItem = await Client.GetShoppingListItem(ID);
+        shoppingListItem = await Client.GetShoppingListItem(ShoppingListItemID);
     }
 
     private async void EditShoppingItem()
@@ -63,7 +63,7 @@
         if (shoppingListItem != null)
         {
             await Client.UpdateShoppingListItem(shoppingListItem);
-            NavigationManager.NavigateTo("ShoppingList/DisplayList");
+            NavigationManager.NavigateTo($"ShoppingListItem/DisplayList/{shoppingListItem.ShoppingListItemID}");
         }
     }
 }

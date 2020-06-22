@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingListBlazorWasm.Server.Services;
 using ShoppingListBlazorWasm.Shared;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace ShoppingListBlazorWasm.Server.Controllers
 {
@@ -17,16 +17,16 @@ namespace ShoppingListBlazorWasm.Server.Controllers
             _shoppingListItemService = shoppingListItemService;
         }
 
-        [HttpGet]
-        public List<ShoppingListItem> Get()
+        [HttpGet("{shoppingListID}")]
+        public List<ShoppingListItem> Get(int shoppingListID)
         {
-            return _shoppingListItemService.Get();
+            return _shoppingListItemService.Get(shoppingListID);
         }
 
-        [HttpGet("{ID}")]
-        public ShoppingListItem Get(Guid ID)
+        [HttpGet("{shoppingListID}/{shoppingListItemID}")]
+        public ShoppingListItem GetItem(int shoppingListItemID)
         {
-            return _shoppingListItemService.Get(ID);
+            return _shoppingListItemService.GetItem(shoppingListItemID);
         }
 
         [HttpPost]
@@ -45,10 +45,10 @@ namespace ShoppingListBlazorWasm.Server.Controllers
             return Ok();
         }
 
-        [HttpDelete("{ID}")]
-        public IActionResult Delete(Guid ID)
+        [HttpDelete("{shoppingListItemID}")]
+        public IActionResult Delete(int shoppingListItemID)
         {
-            _shoppingListItemService.Delete(ID);
+            _shoppingListItemService.Delete(shoppingListItemID);
 
             return Ok();
         }

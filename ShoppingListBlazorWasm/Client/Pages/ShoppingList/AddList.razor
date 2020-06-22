@@ -1,0 +1,76 @@
+﻿@page "/shoppinglist/addlist"
+@using ShoppingListBlazorWasm.Shared
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListClient Client
+@inject NavigationManager NavigationManager
+
+<h3>Add Shopping List</h3>
+
+@if (copyShoppingLists == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="shoppingList" OnValidSubmit="@CreateShoppingList">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Item</label>
+            <div class="col-md-3">
+                <InputDate class="form-control" @bind-Value="shoppingList.ShoppingDate" />
+                <ValidationMessage For="(() => shoppingList.ShoppingDate)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Total Amount</label>
+            <div class="col-md-3">
+                <InputNumber class="form-control" @bind-Value="shoppingList.TotalAmount" />
+                <ValidationMessage For="(() => shoppingList.TotalAmount)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Copy Shopping List</label>
+            <div class="col-md-3">
+                <InputSelect @bind-Value="shoppingList.CopyShoppingListID" class="form-control">
+                    <option value="">Copy from</option>
+                    @foreach (var copyShoppingList in copyShoppingLists)
+                    {
+                        <option value="@copyShoppingList.ShoppingListID">@copyShoppingList.ShoppingDate.ToString("dd MMM yyyy")</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="(() => shoppingList.CopyShoppingListID)" />
+            </div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+<div class="form-actions no-color esh-link-list" style="padding-top: 20px">
+    <a href="ShoppingListItem/DisplayList" class="esh-link-item">
+        Back to Shopping List
+    </a>
+</div>
+
+@code {
+    protected ShoppingList shoppingList = new ShoppingList();
+    protected List<ShoppingList> copyShoppingLists;
+
+    protected override async Task OnInitializedAsync()
+    {
+        copyShoppingLists = await Client.GetShoppingLists();
+        shoppingList.DateCreated = DateTime.UtcNow;
+    }
+
+    private async void CreateShoppingList()
+    {
+        if (shoppingList != null)
+        {
+            await Client.CreateShoppingList(shoppingList);
+            NavigationManager.NavigateTo("ShoppingList/Overview");
+        }
+    }
+}

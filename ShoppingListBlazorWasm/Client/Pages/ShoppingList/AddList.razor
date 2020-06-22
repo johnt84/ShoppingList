@@ -34,7 +34,7 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Copy Shopping List</label>
             <div class="col-md-3">
-                <InputSelect @bind-Value="shoppingList.CopyShoppingListID" class="form-control">
+                <InputSelect @bind-Value="copyShoppingListID" class="form-control">
                     <option value="">Copy from</option>
                     @foreach (var copyShoppingList in copyShoppingLists)
                     {
@@ -58,17 +58,19 @@ else
 @code {
     protected ShoppingList shoppingList = new ShoppingList();
     protected List<ShoppingList> copyShoppingLists;
+    protected string copyShoppingListID;
 
     protected override async Task OnInitializedAsync()
     {
         copyShoppingLists = await Client.GetShoppingLists();
-        shoppingList.DateCreated = DateTime.UtcNow;
+        shoppingList.ShoppingDate = DateTime.UtcNow;
     }
 
     private async void CreateShoppingList()
     {
         if (shoppingList != null)
         {
+            shoppingList.CopyShoppingListID = Convert.ToInt32(copyShoppingListID);
             await Client.CreateShoppingList(shoppingList);
             NavigationManager.NavigateTo("ShoppingList/Overview");
         }

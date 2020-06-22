@@ -59,8 +59,8 @@ namespace ShoppingListBlazorWasm.Server.Services
                 string query = @"exec procShoppingListCreate 
                                         @shoppingDate, 
                                         @totalAmount, 
-                                        @dateCreated, 
-                                        @userID";
+                                        @userID,
+                                        @copyShoppingListID";
 
                 try
                 {

@@ -52,64 +52,78 @@ else
         }
         else
         {
-            <table>
-                <tr>
-                    <th>
-                        Item
-                    </th>
-                    <th>
-                        Price
-                    </th>
-                    <th>
-                        Qty
-                    </th>
-                    <th>
-                        Picked
-                    </th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                @foreach (var shoppingListItem in shoppingListItems)
+<table>
+    <tr>
+        <th>
+            Item
+        </th>
+        <th>
+            Price
+        </th>
+        <th>
+            Qty
+        </th>
+        <th>
+            Item Cost
+        </th>
+        <th>
+            Picked
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    @foreach (var shoppingListItem in shoppingListItems)
+    {
+        <tr style="@(shoppingListItem.ItemPicked || shoppingListItem.Quantity == 0 ? "text-decoration: line-through" : "")">
+            <td>
+                @shoppingListItem.ItemName
+            </td>
+            <td>
+                @shoppingListItem.Price
+            </td>
+            <td>
+                @shoppingListItem.Quantity
+            </td>
+            <td>
+                @(shoppingListItem.Price * @shoppingListItem.Quantity)
+            </td>
+            <td>
+                @if (shoppingListItem.ItemPicked)
                 {
-                    <tr style="@(shoppingListItem.ItemPicked || shoppingListItem.Quantity == 0 ? "text-decoration: line-through" : "")">
-                        <td>
-                            @shoppingListItem.ItemName
-                        </td>
-                        <td>
-                            @shoppingListItem.Price
-                        </td>
-                        <td>
-                            @shoppingListItem.Quantity
-                        </td>
-                        <td>
-                            @if (shoppingListItem.ItemPicked)
-                            {
-                                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ShoppingListItemID))" checked />
-                            }
-                            else
-                            {
-                                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ShoppingListItemID))" />
-                            }
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Display
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/edititem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Edit
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/deleteitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
+                    <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ShoppingListItemID))" checked />
                 }
-            </table>
+                else
+                {
+                    <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ShoppingListItemID))" />
+                }
+            </td>
+            <td>
+                <a href="@($"shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                    Display
+                </a>
+            </td>
+            <td>
+                <a href="@($"shoppinglistitem/edititem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                    Edit
+                </a>
+            </td>
+            <td>
+                <a href="@($"shoppinglistitem/deleteitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                    Delete
+                </a>
+            </td>
+        </tr>
+    }
+    <tr>
+        <td>
+            Total Cost:
+        </td>
+        <td>
+            @shoppingListItems.Sum(x => x.Price * x.Quantity)
+        </td>
+    </tr>
+</table>
         }
     }
 }
@@ -131,6 +145,7 @@ else
         {
             var shoppingListItem = await Client.GetShoppingListItem(ShoppingListItemID);
             ShoppingListID = shoppingListItem?.ShoppingListID ?? 0;
+            shoppingListItems = await Client.GetShoppingListItems(ShoppingListID);
         }
     }
 

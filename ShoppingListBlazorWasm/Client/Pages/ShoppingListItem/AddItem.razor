@@ -20,8 +20,8 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Shopping List</label>
             <div class="col-md-3">
-                <InputSelect @bind-Value="shoppingListItem.ShoppingListID" class="form-control">
-                    <option value="">Copy from</option>
+                <InputSelect @bind-Value="shoppingListID" class="form-control">
+                    <option value="">Please select a Shopping List</option>
                     @foreach (var shoppingList in shoppingLists)
                         {
                         <option value="@shoppingList.ShoppingListID">@shoppingList.ShoppingDate.ToString("dd MMM yyyy")</option>
@@ -71,6 +71,7 @@ else
 
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
     protected List<ShoppingList> shoppingLists;
+    protected string shoppingListID;
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,7 +80,7 @@ else
         if (ShoppingListID > 0)
         {
             var shoppingList = await Client.GetShoppingList(ShoppingListID);
-            shoppingListItem.ShoppingListID = shoppingList?.ShoppingListID ?? 0;
+            shoppingListID = (shoppingList?.ShoppingListID ?? 0).ToString();
         }
     }
 
@@ -87,6 +88,7 @@ else
     {
         if (shoppingListItem != null)
         {
+            shoppingListItem.ShoppingListID = Convert.ToInt32(shoppingListID);
             await Client.CreateShoppingListItem(shoppingListItem);
             NavigationManager.NavigateTo($"ShoppingListItem/DisplayList/{shoppingListItem.ShoppingListItemID}");
         }

@@ -1,0 +1,85 @@
+﻿@page "/shoppinglist/deletelist/{ShoppingListID:int}"
+
+@using ShoppingListBlazorWasm.Shared
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListClient Client
+@inject NavigationManager NavigationManager
+
+<h3>Delete Shopping List</h3>
+
+<div class="container">
+    <div class="row">
+        <dl class="col-md-6 dl-horizontal">
+            <dt>
+                Shopping Date
+            </dt>
+
+            <dd>
+                @shoppingList.ShoppingDate.ToString("dd MMM yyyy")
+            </dd>
+
+            <dt>
+                Date Created
+            </dt>
+
+            <dd>
+                @shoppingList.DateCreated.ToString("dd MMM yyyy")
+            </dd>
+
+            <dt>
+                Total Amount
+            </dt>
+
+            <dd>
+                @shoppingList.TotalAmount
+            </dd>
+
+            <dt>
+                Number of Items
+            </dt>
+
+            <dd>
+                @shoppingList.NumberOfItems
+            </dd>
+
+            <dt>
+                Estimated Total Amount
+            </dt>
+
+            <dd>
+                @shoppingList.EstimatedTotalAmount
+            </dd>
+        </dl>
+    </div>
+
+    <div class="form-actions no-color esh-link-list">
+        <button class="btn esh-button esh-button-primary" @onclick="DeleteShoppingList">
+            Delete
+        </button>
+        |
+        <a href="/shoppinglist/overview" class="esh-link-item">
+            Back to Overview
+        </a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ShoppingListID { get; set; }
+
+    protected ShoppingList shoppingList = new ShoppingList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        shoppingList = await Client.GetShoppingList(ShoppingListID);
+    }
+
+    private async Task DeleteShoppingList()
+    {
+        if (shoppingList != null)
+        {
+            await Client.DeleteShoppingList(shoppingList.ShoppingListID);
+            NavigationManager.NavigateTo("ShoppingList/Overview");
+        }
+    }
+}

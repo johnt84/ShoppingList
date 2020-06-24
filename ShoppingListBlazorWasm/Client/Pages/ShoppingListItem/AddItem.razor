@@ -32,7 +32,7 @@ else
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">Item</label>
+            <label class="control-label col-md-2">Name</label>
             <div class="col-md-3">
                 <InputText class="form-control" @bind-Value="shoppingListItem.ItemName" />
                 <ValidationMessage For="(() => shoppingListItem.ItemName)" />
@@ -89,7 +89,7 @@ else
         if (shoppingListItem != null)
         {
             shoppingListItem.ShoppingListID = Convert.ToInt32(shoppingListID);
-            await Client.CreateShoppingListItem(shoppingListItem);
+            shoppingListItem.ShoppingListItemID = await Client.CreateShoppingListItem(shoppingListItem);
             NavigationManager.NavigateTo($"ShoppingListItem/DisplayList/{shoppingListItem.ShoppingListItemID}");
         }
     }

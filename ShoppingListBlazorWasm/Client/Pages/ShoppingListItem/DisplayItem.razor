@@ -1,5 +1,4 @@
-﻿@page "/shoppinglistitem/displayitem"
-@page "/shoppinglistitem/displayitem/{ShoppingListItemID:int}"
+﻿@page "/shoppinglistitem/displayitem/{ShoppingListItemID:int}"
 
 @using ShoppingListBlazorWasm.Shared
 @using ShoppingListBlazorWasm.Client.Data
@@ -41,8 +40,8 @@
             Edit Item
         </a>
         |
-        <a href="/shoppinglistitem/displaylist" class="esh-link-item">
-            Back to Overview
+        <a href="@($"/shoppinglistitem/displaylist/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
+            Back to Shopping List
         </a>
     </div>
 </div>

@@ -5,6 +5,12 @@
 
 <h3>Overview</h3>
 
+<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
+    <a href="/shoppinglist/addlist/" class="esh-link-item">
+        Create
+    </a>
+</div>
+
 @if (shoppingLists == null)
 {
     <p><em>Loading...</em></p>
@@ -29,23 +35,56 @@ else
             <th>
                 Number of Items
             </th>
+            <th>
+                Estimated Total Amount
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
         @foreach (var shoppingList in shoppingLists)
         {
-        <tr>
-            <td>
-                @shoppingList.ShoppingDate.ToString("dd MMM yyyy")
-            </td>
-            <td>
-                @shoppingList.DateCreated
-            </td>
-            <td>
-                @shoppingList.TotalAmount
-            </td>
-            <td>
-                @shoppingList.NumberOfItems
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @shoppingList.ShoppingDate.ToString("dd MMM yyyy")
+        </td>
+        <td>
+            @shoppingList.DateCreated.ToString("dd MMM yyyy")
+        </td>
+        <td>
+            @shoppingList.TotalAmount
+        </td>
+        <td>
+            @shoppingList.NumberOfItems
+        </td>
+        <td>
+            @shoppingList.EstimatedTotalAmount
+        </td>
+        <td>
+            <a href="@($"shoppinglist/displaylist/{shoppingList.ShoppingListID}")" class="esh-table-link">
+                Display
+            </a>
+        </td>
+        <td>
+            <a href="@($"shoppinglist/editlist/{shoppingList.ShoppingListID}")" class="esh-table-link">
+                Edit
+            </a>
+        </td>
+        <td>
+            @if (shoppingList.NumberOfItems == 0)
+            {
+                <a href="@($"shoppinglist/deletelist/{shoppingList.ShoppingListID}")" class="esh-table-link">
+                    Delete
+                </a>
+            }
+        </td>
+        <td>
+            <a href="shoppinglistitem/displaylist" class="esh-table-link">
+                View Items
+            </a>
+        </td>
+    </tr>
         }
     </table>
 }

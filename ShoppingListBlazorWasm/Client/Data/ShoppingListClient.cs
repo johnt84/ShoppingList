@@ -25,11 +25,10 @@ namespace ShoppingListBlazorWasm.Client.Data
         public async Task<ShoppingList> GetShoppingList(int shoppingListID) =>
             await _httpClient.GetFromJsonAsync<ShoppingList>($"{SHOPPING_LIST_API_URL}/{shoppingListID}");
 
-
-        public async Task CreateShoppingList(ShoppingList shoppingList)
+        public async Task<int> CreateShoppingList(ShoppingList shoppingList)
         {
             var response = await _httpClient.PostAsJsonAsync(SHOPPING_LIST_API_URL, shoppingList);
-            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
         public async Task UpdateShoppingList(ShoppingList shoppingList)
@@ -52,10 +51,10 @@ namespace ShoppingListBlazorWasm.Client.Data
             await _httpClient.GetFromJsonAsync<ShoppingListItem>($"{SHOPPING_LIST_ITEM_API_URL}/0/{shoppingListItemID}");
 
 
-        public async Task CreateShoppingListItem(ShoppingListItem shoppingListItem)
+        public async Task<int> CreateShoppingListItem(ShoppingListItem shoppingListItem)
         {
             var response = await _httpClient.PostAsJsonAsync(SHOPPING_LIST_ITEM_API_URL, shoppingListItem);
-            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
         public async Task UpdateShoppingListItem(ShoppingListItem shoppingListItem)

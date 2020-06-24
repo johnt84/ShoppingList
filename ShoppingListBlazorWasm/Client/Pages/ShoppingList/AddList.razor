@@ -16,7 +16,7 @@ else
         <DataAnnotationsValidator />
 
         <div class="form-group">
-            <label class="control-label col-md-2">Item</label>
+            <label class="control-label col-md-2">Shopping Date</label>
             <div class="col-md-3">
                 <InputDate class="form-control" @bind-Value="shoppingList.ShoppingDate" />
                 <ValidationMessage For="(() => shoppingList.ShoppingDate)" />
@@ -71,7 +71,7 @@ else
         if (shoppingList != null)
         {
             shoppingList.CopyShoppingListID = Convert.ToInt32(copyShoppingListID);
-            await Client.CreateShoppingList(shoppingList);
+            int newShoppingList = await Client.CreateShoppingList(shoppingList);
             NavigationManager.NavigateTo("ShoppingList/Overview");
         }
     }

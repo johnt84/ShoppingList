@@ -24,11 +24,11 @@ namespace ShoppingListBlazorWasm.Server.Services
             using (IDbConnection connection = Connection)
             {
                 connection.Open();
-                var shoppingListItems = connection.
-                                            Query<ShoppingList>(
-                                                "procShoppingListsGet",
-                                                commandType: CommandType.StoredProcedure).
-                                            ToList();
+                var shoppingListItems = connection
+                                            .Query<ShoppingList>(
+                                                "procShoppingListGet",
+                                                commandType: CommandType.StoredProcedure)
+                                            .ToList();
 
 
                 return shoppingListItems;
@@ -40,20 +40,22 @@ namespace ShoppingListBlazorWasm.Server.Services
             using (IDbConnection connection = Connection)
             {
                 connection.Open();
-                var shoppingList = connection.
-                                            Query<ShoppingList>(
-                                                "procShoppingListsGet",
+                var shoppingList = connection
+                                            .Query<ShoppingList>(
+                                                "procShoppingListGet",
                                                 new { shoppingListID },
-                                                commandType: CommandType.StoredProcedure).
-                                            FirstOrDefault();
+                                                commandType: CommandType.StoredProcedure)
+                                            .FirstOrDefault();
 
 
                 return shoppingList;
             }
         }
 
-        public void Add(ShoppingList shoppingList)
+        public int Add(ShoppingList shoppingList)
         {
+            int newShoppingListID = 0;
+            
             using (IDbConnection connection = Connection)
             {
                 string query = @"exec procShoppingListCreate 
@@ -64,14 +66,16 @@ namespace ShoppingListBlazorWasm.Server.Services
 
                 try
                 {
-                    int newShoppingListItemID = connection.
-                                                    Query<int>(query, shoppingList).
-                                                    Single();
+                    newShoppingListID = connection
+                                            .Query<int>(query, shoppingList)
+                                            .Single();
                 }
                 catch (Exception ex)
                 {
                 }
             }
+
+            return newShoppingListID;
         }
 
         public void Update(ShoppingList shoppingList)
@@ -82,7 +86,6 @@ namespace ShoppingListBlazorWasm.Server.Services
                                         @shoppingListID, 
                                         @shoppingDate, 
                                         @totalAmount, 
-                                        @dateCreated, 
                                         @userID";
 
                 try
@@ -101,7 +104,7 @@ namespace ShoppingListBlazorWasm.Server.Services
             {
                 string query = "exec procShoppingListDelete @shoppingListID";
 
-                connection.Query<int>(query, shoppingListID);
+                connection.Query<int>(query, new { shoppingListID = shoppingListID });
             }
         }
     }

@@ -16,6 +16,9 @@ namespace ShoppingListBlazorWasm.Shared
         public DateTime DateCreated { get; set; }
         public int UserID { get; set; }
         public int CopyShoppingListID { get; set; }
+
+        //Read only properties
         public int NumberOfItems { get; set; }
+        public decimal EstimatedTotalAmount { get; set; }
     }
 }

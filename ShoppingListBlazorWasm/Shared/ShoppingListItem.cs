@@ -18,6 +18,7 @@ namespace ShoppingListBlazorWasm.Shared
         public bool ItemPicked { get; set; }
         public decimal ItemCost { get; set; }
 
+        //Read only properties
         public DateTime ShoppingDate { get; set; }
         public DateTime DateCreated { get; set; }
         public decimal TotalAmount { get; set; }

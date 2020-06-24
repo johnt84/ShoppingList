@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingListBlazorWasm.Server.Services;
 using ShoppingListBlazorWasm.Shared;
-using System;
 using System.Collections.Generic;
 
 namespace ShoppingListBlazorWasm.Server.Controllers
@@ -30,11 +29,9 @@ namespace ShoppingListBlazorWasm.Server.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ShoppingListItem shoppingListItem)
+        public ActionResult<int> Create(ShoppingListItem shoppingListItem)
         {
-            _shoppingListItemService.Add(shoppingListItem);
-
-            return Ok();
+            return _shoppingListItemService.Add(shoppingListItem);
         }
 
         [HttpPut]

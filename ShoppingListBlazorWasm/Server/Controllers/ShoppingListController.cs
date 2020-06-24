@@ -29,11 +29,9 @@ namespace ShoppingListBlazorWasm.Server.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ShoppingList shoppingList)
+        public ActionResult<int> Create(ShoppingList shoppingList)
         {
-            _shoppingListService.Add(shoppingList);
-
-            return Ok();
+            return _shoppingListService.Add(shoppingList);
         }
 
         [HttpPut]

@@ -41,7 +41,7 @@
             Delete
         </button>
         |
-        <a href="/shoppinglistitem/displaylist" class="esh-link-item">
+        <a href="@($"/shoppinglistitem/displaylist/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
             Back to Shopping List
         </a>
     </div>
@@ -63,7 +63,7 @@
         if (shoppingListItem != null)
         {
             await Client.DeleteShoppingListItem(ShoppingListItemID);
-            NavigationManager.NavigateTo("ShoppingListItem/DisplayList");
+            NavigationManager.NavigateTo($"ShoppingListItem/DisplayList/0/{shoppingListItem.ShoppingListID}");
         }
     }
 }

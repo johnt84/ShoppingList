@@ -1,20 +1,19 @@
-﻿@page "/shoppinglistitem/displaylist"
-@page  "/shoppinglistitem/displaylist/{ShoppingListItemID:int}"
-@page  "/shoppinglistitem/displaylist/0/{ShoppingListID:int}"
+﻿@page "/shoppinglistitem/instorelist"
+@page  "/shoppinglistitem/instorelist/{ShoppingListID:int}"
 
 @using ShoppingListBlazorWasm.Shared
 @using ShoppingListBlazorWasm.Client.Data
 @inject ShoppingListClient Client
 
-<h3>Shopping List</h3>
+<h3>Shopping List In Store</h3>
 
 <div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
     <a href="@($"/shoppinglistitem/additem/{ShoppingListID}")" class="esh-link-item">
         Create
     </a>
     |
-    <a href="@($"/shoppinglistitem/instorelist/{ShoppingListID}")" class="esh-link-item">
-        In Store List
+    <a href="@($"/shoppinglistitem/displaylist/{ShoppingListID}")" class="esh-link-item">
+        Display Items
     </a>
 </div>
 
@@ -57,91 +56,58 @@ else
         }
         else
         {
-            <table style="font-size: 17px;">
+            <label style="font-size: large; font-weight: bold;">@inStoreMessage</label>
+            
+            <table style="font-size: 24px;">
                 <tr>
-                    <th style="width: 250px;">
+                    <th style="width: 300px;">
                         Item
                     </th>
                     <th style="width: 75px; text-align: center;">
-                        Price
-                    </th>
-                    <th style="width: 55px; text-align: center;">
                         Qty
                     </th>
-                    <th style="width: 105px; text-align: center;">
-                        Item Cost
-                    </th>
-                    <th style="width: 80px;"></th>
-                    <th style="width: 55px;"></th>
-                    <th style="width: 125px;"></th>
+                    <th></th>
                 </tr>
                 @foreach (var shoppingListItem in shoppingListItems)
                 {
-                    <tr>
+                    <tr style="@(shoppingListItem.ItemPicked || shoppingListItem.Quantity == 0 ? "text-decoration: line-through; opacity: 0.6;" : "")">
                         <td>
                             @shoppingListItem.ItemName
                         </td>
-                        <td style="text-align: center">
-                            @shoppingListItem.Price
-                        </td>
-                        <td style="text-align: center">
+                        <td style="text-align: center;">
                             @shoppingListItem.Quantity
                         </td>
-                        <td style="text-align: center">
-                            @(shoppingListItem.Price * @shoppingListItem.Quantity)
-                        </td>
                         <td>
-                            <a href="@($"shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Display
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/edititem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Edit
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/deleteitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Delete
-                            </a>
+                            @if (shoppingListItem.ItemPicked)
+                            {
+                                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ShoppingListItemID))" checked />
+                            }
+                            else
+                            {
+                                <input type=checkbox @onchange="(() => PickShoppingItem(shoppingListItem.ShoppingListItemID))" />
+                            }
                         </td>
                     </tr>
                 }
-                <tr>
-                    <td style="font-weight: bold;">
-                        Total Cost
-                    </td>
-                    <td style="font-weight: bold; text-align: center;">
-                        @shoppingListItems.Sum(x => x.Price * x.Quantity)
-                    </td>
-                </tr>
             </table>
         }
     }
 }
 
 @code {
-    [Parameter]
-    public int ShoppingListItemID { get; set; }
-
-    [Parameter]
-    public int ShoppingListID { get; set; }
+        [Parameter]
+        public int ShoppingListID { get; set; }
 
     protected List<ShoppingList> shoppingLists;
     protected List<ShoppingListItem> shoppingListItems;
     protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+    protected string inStoreMessage;
 
     protected override async Task OnInitializedAsync()
     {
         shoppingLists = await Client.GetShoppingLists();
 
-        shoppingLists = shoppingLists.OrderBy(x => x.ShoppingDate).ToList();
-
-        if (ShoppingListItemID > 0)
-        {
-            var shoppingListItem = await Client.GetShoppingListItem(ShoppingListItemID);
-            ShoppingListID = shoppingListItem?.ShoppingListID ?? 0;
-        }
+        shoppingLists = shoppingLists.Where(x => x.NumberOfItems > 0).OrderBy(x => x.ShoppingDate).ToList();
 
         await RefreshShoppingListItems();
     }
@@ -153,13 +119,29 @@ else
         await RefreshShoppingListItems();
     }
 
+    private async Task PickShoppingItem(int shoppingListItemID)
+    {
+        var shoppingListItemToUpdate = shoppingListItems.First(x => x.ShoppingListItemID == shoppingListItemID);
+
+        if (shoppingListItemToUpdate != null)
+        {
+            shoppingListItemToUpdate.ItemPicked = !shoppingListItemToUpdate.ItemPicked;
+        }
+
+        await Client.UpdateShoppingListItem(shoppingListItemToUpdate);
+
+        await RefreshShoppingListItems();
+    }
+
     private async Task RefreshShoppingListItems()
     {
-        if(ShoppingListID > 0)
+        if (ShoppingListID > 0)
         {
             shoppingListItems = await Client.GetShoppingListItems(ShoppingListID);
 
-            shoppingListItems = shoppingListItems.OrderBy(x => x.ItemName).ToList();
+            shoppingListItems = shoppingListItems.Where(x => x.Quantity > 0).ToList();
+
+            inStoreMessage = shoppingListItems.All(x => x.ItemPicked) ? "Go to checkouts" : "In Shop";
         }
     }
 }

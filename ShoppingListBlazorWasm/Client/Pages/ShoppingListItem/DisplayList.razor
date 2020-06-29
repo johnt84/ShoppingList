@@ -8,7 +8,7 @@
 
 <h3>Shopping List</h3>
 
-<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
+<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px; font-size: 18px;">
     <a href="@($"/shoppinglistitem/additem/{ShoppingListID}")" class="esh-link-item">
         Create
     </a>
@@ -57,22 +57,25 @@ else
         }
         else
         {
-            <table style="font-size: 17px;">
+            <label style="font-size: 20px;">Search Items:</label>
+            <input style="font-size: 20px; margin-left: 10px;" @oninput="SearchItemsChanged" />
+            
+            <table style="font-size: 32px;">
                 <tr>
-                    <th style="width: 250px;">
+                    <th style="width: 330px;">
                         Item
                     </th>
-                    <th style="width: 75px; text-align: center;">
+                    <th style="width: 115px; text-align: center;">
                         Price
                     </th>
-                    <th style="width: 55px; text-align: center;">
+                    <th style="width: 65px; text-align: center;">
                         Qty
                     </th>
-                    <th style="width: 105px; text-align: center;">
+                    <th style="width: 165px; text-align: center;">
                         Item Cost
                     </th>
-                    <th style="width: 80px;"></th>
-                    <th style="width: 55px;"></th>
+                    <th style="width: 120px;"></th>
+                    <th style="width: 75px;"></th>
                     <th style="width: 125px;"></th>
                 </tr>
                 @foreach (var shoppingListItem in shoppingListItems)
@@ -127,9 +130,10 @@ else
     [Parameter]
     public int ShoppingListID { get; set; }
 
-    protected List<ShoppingList> shoppingLists;
-    protected List<ShoppingListItem> shoppingListItems;
-    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+    private List<ShoppingList> shoppingLists;
+    private List<ShoppingListItem> shoppingListItems;
+    private ShoppingListItem shoppingListItem = new ShoppingListItem();
+    private string shoppingListItemSearch;
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,11 +150,28 @@ else
         await RefreshShoppingListItems();
     }
 
-    protected async Task ShoppingListSelected(ChangeEventArgs e)
+    private async Task ShoppingListSelected(ChangeEventArgs e)
     {
         ShoppingListID = Convert.ToInt32(e.Value.ToString());
 
         await RefreshShoppingListItems();
+    }
+
+    private async Task SearchItemsChanged(ChangeEventArgs e)
+    {
+        shoppingListItemSearch = e.Value.ToString();
+
+        await RefreshShoppingListItems();
+
+        if (!string.IsNullOrEmpty(shoppingListItemSearch))
+        {
+            var searchShoppingListItems = shoppingListItems
+                                            .Where(x => x.ItemName.ToLower().Contains(shoppingListItemSearch.ToLower()))
+                                            .OrderBy(x => x.ItemName)
+                                            .ToList();
+
+            shoppingListItems = searchShoppingListItems.Count > 0 ? searchShoppingListItems : shoppingListItems;
+        }
     }
 
     private async Task RefreshShoppingListItems()

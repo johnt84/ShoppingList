@@ -7,7 +7,7 @@
 
 <h3>Shopping List In Store</h3>
 
-<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
+<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px; font-size: 18px;">
     <a href="@($"/shoppinglistitem/additem/{ShoppingListID}")" class="esh-link-item">
         Create
     </a>
@@ -56,8 +56,20 @@ else
         }
         else
         {
-            <label style="font-size: large; font-weight: bold;">@inStoreMessage</label>
-            
+            <table>
+                <tr>
+                    <td>
+                        <label style="font-size: 30px; font-weight: bold;">@inStoreMessage</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="font-size: 22px;">@itemsPickedCountMessage</label>
+                    </td>
+                </tr>
+            </table>
+
+
             <table style="font-size: 24px;">
                 <tr>
                     <th style="width: 300px;">
@@ -95,13 +107,14 @@ else
 }
 
 @code {
-        [Parameter]
-        public int ShoppingListID { get; set; }
+    [Parameter]
+    public int ShoppingListID { get; set; }
 
-    protected List<ShoppingList> shoppingLists;
-    protected List<ShoppingListItem> shoppingListItems;
-    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
-    protected string inStoreMessage;
+    private List<ShoppingList> shoppingLists;
+    private List<ShoppingListItem> shoppingListItems;
+    private ShoppingListItem shoppingListItem = new ShoppingListItem();
+    private string inStoreMessage;
+    private string itemsPickedCountMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,7 +125,7 @@ else
         await RefreshShoppingListItems();
     }
 
-    protected async Task ShoppingListSelected(ChangeEventArgs e)
+    private async Task ShoppingListSelected(ChangeEventArgs e)
     {
         ShoppingListID = Convert.ToInt32(e.Value.ToString());
 
@@ -142,6 +155,11 @@ else
             shoppingListItems = shoppingListItems.Where(x => x.Quantity > 0).ToList();
 
             inStoreMessage = shoppingListItems.All(x => x.ItemPicked) ? "Go to checkouts" : "In Shop";
+
+            int numberOfItemsInList = shoppingListItems.Count;
+            int numberOfItemsPicked = shoppingListItems.Where(x => x.ItemPicked).Count();
+
+            itemsPickedCountMessage = $"{numberOfItemsPicked}/{numberOfItemsInList} items picked";
         }
     }
 }

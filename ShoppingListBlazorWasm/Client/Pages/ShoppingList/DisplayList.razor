@@ -6,7 +6,7 @@
 
 <h3>Display Shopping Item</h3>
 
-<div class="container">
+<div class="container" style="font-size: 18px">
     <div class="row">
         <dl class="col-md-6 dl-horizontal">
             <dt>
@@ -51,7 +51,7 @@
         </dl>
     </div>
 
-    <div class="form-actions no-color esh-link-list">
+    <div class="form-actions no-color esh-link-list" style="font-size: 18px;">
         <a href="@($"/shoppinglist/editlist/{shoppingList.ShoppingListID}")" class="esh-link-item">
             Edit List
         </a>
@@ -66,7 +66,7 @@
     [Parameter]
     public int ShoppingListID { get; set; }
 
-    protected ShoppingList shoppingList = new ShoppingList();
+    private ShoppingList shoppingList = new ShoppingList();
 
     protected override async Task OnInitializedAsync()
     {

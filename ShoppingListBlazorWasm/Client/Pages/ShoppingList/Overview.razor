@@ -5,7 +5,7 @@
 
 <h3>Overview</h3>
 
-<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px">
+<div class="form-actions no-color esh-link-list" style="padding-bottom: 20px; font-size: 18px;">
     <a href="/shoppinglist/addlist/" class="esh-link-item">
         Create
     </a>
@@ -21,27 +21,27 @@ else if (!shoppingLists.Any())
 }
 else
 {
-    <table>
+    <table style="font-size: 20px;">
         <tr>
-            <th>
+            <th style="width: 165px;">
                 Shopping Date
             </th>
-            <th>
+            <th style="width: 155px;">
                 Date Created
             </th>
-            <th>
+            <th style="width: 155px;">
                 Total Amount
             </th>
-            <th>
+            <th style="width: 175px;">
                 Number of Items
             </th>
-            <th>
+            <th style="width: 255px;">
                 Estimated Total Amount
             </th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th style="width: 95px;"></th>
+            <th style="width: 65px;"></th>
+            <th style="width: 75px;"></th>
+            <th style="width: 130px;"></th>
         </tr>
         @foreach (var shoppingList in shoppingLists)
         {
@@ -52,13 +52,13 @@ else
         <td>
             @shoppingList.DateCreated.ToString("dd MMM yyyy")
         </td>
-        <td>
+        <td style="text-align: center">
             @shoppingList.TotalAmount
         </td>
-        <td>
+        <td style="text-align: center">
             @shoppingList.NumberOfItems
         </td>
-        <td>
+        <td style="text-align: center">
             @shoppingList.EstimatedTotalAmount
         </td>
         <td>
@@ -80,14 +80,20 @@ else
             }
         </td>
         <td>
-            <a href="@($"shoppinglistitem/displaylist/0/{shoppingList.ShoppingListID}")" class="esh-table-link">
-                View Items
-            </a>
-        </td>
+            @if (shoppingList.NumberOfItems > 0)
+            {
+                <a href="@($"shoppinglistitem/displaylist/0/{shoppingList.ShoppingListID}")" class="esh-table-link">
+                    View Items
+                </a>
+            }
+            </td>
         <td>
-            <a href="@($"shoppinglistitem/instorelist/{shoppingList.ShoppingListID}")" class="esh-table-link">
-                In Store List
-            </a>
+            @if (shoppingList.NumberOfItems > 0)
+            {
+                <a href="@($"shoppinglistitem/instorelist/{shoppingList.ShoppingListID}")" class="esh-table-link">
+                    In Store List
+                </a>
+            }
         </td>
     </tr>
         }

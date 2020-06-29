@@ -12,13 +12,13 @@
 }
 else
 {
-    <EditForm Model="shoppingList" OnValidSubmit="@CreateShoppingList">
+    <EditForm Model="shoppingList" OnValidSubmit="@CreateShoppingList"  style="font-size: 18px">
         <DataAnnotationsValidator />
 
         <div class="form-group">
             <label class="control-label col-md-2">Shopping Date</label>
             <div class="col-md-3">
-                <InputDate class="form-control" @bind-Value="shoppingList.ShoppingDate" />
+                <InputDate style="font-size: 18px" class="form-control" @bind-Value="shoppingList.ShoppingDate" />
                 <ValidationMessage For="(() => shoppingList.ShoppingDate)" />
             </div>
         </div>
@@ -26,7 +26,7 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Total Amount</label>
             <div class="col-md-3">
-                <InputNumber class="form-control" @bind-Value="shoppingList.TotalAmount" />
+                <InputNumber style="font-size: 18px" class="form-control" @bind-Value="shoppingList.TotalAmount" />
                 <ValidationMessage For="(() => shoppingList.TotalAmount)" />
             </div>
         </div>
@@ -34,7 +34,7 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Copy Shopping List</label>
             <div class="col-md-3">
-                <InputSelect @bind-Value="copyShoppingListID" class="form-control">
+                <InputSelect style="font-size: 18px" @bind-Value="copyShoppingListID" class="form-control">
                     <option value="">Copy from</option>
                     @foreach (var copyShoppingList in copyShoppingLists)
                     {
@@ -49,16 +49,16 @@ else
     </EditForm>
 }
 
-<div class="form-actions no-color esh-link-list" style="padding-top: 20px">
+<div class="form-actions no-color esh-link-list" style="padding-top: 20px; font-size: 18px;">
     <a href="ShoppingListItem/DisplayList" class="esh-link-item">
         Back to Shopping List
     </a>
 </div>
 
 @code {
-    protected ShoppingList shoppingList = new ShoppingList();
-    protected List<ShoppingList> copyShoppingLists;
-    protected string copyShoppingListID;
+    private ShoppingList shoppingList = new ShoppingList();
+    private List<ShoppingList> copyShoppingLists;
+    private string copyShoppingListID;
 
     protected override async Task OnInitializedAsync()
     {

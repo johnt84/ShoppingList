@@ -14,13 +14,13 @@
 }
 else
 {
-    <EditForm Model="shoppingListItem" OnValidSubmit="@CreateShoppingItem">
+    <EditForm Model="shoppingListItem" OnValidSubmit="@CreateShoppingItem" style="font-size: 18px">
         <DataAnnotationsValidator />
 
         <div class="form-group">
             <label class="control-label col-md-2">Shopping List</label>
             <div class="col-md-3">
-                <InputSelect @bind-Value="shoppingListID" class="form-control">
+                <InputSelect style="font-size: 18px" @bind-Value="shoppingListID" class="form-control">
                     <option value="">Please select a Shopping List</option>
                     @foreach (var shoppingList in shoppingLists)
                         {
@@ -34,7 +34,7 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Name</label>
             <div class="col-md-3">
-                <InputText class="form-control" @bind-Value="shoppingListItem.ItemName" />
+                <InputText style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.ItemName" />
                 <ValidationMessage For="(() => shoppingListItem.ItemName)" />
             </div>
         </div>
@@ -42,7 +42,7 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Price</label>
             <div class="col-md-3">
-                <InputNumber class="form-control" @bind-Value="shoppingListItem.Price" />
+                <InputNumber style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.Price" />
                 <ValidationMessage For="(() => shoppingListItem.Price)" />
             </div>
         </div>
@@ -50,7 +50,7 @@ else
         <div class="form-group">
             <label class="control-label col-md-2">Qty</label>
             <div class="col-md-3">
-                <InputNumber class="form-control" @bind-Value="shoppingListItem.Quantity" />
+                <InputNumber style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.Quantity" />
                 <ValidationMessage For="(() => shoppingListItem.Quantity)" />
             </div>
         </div>
@@ -59,7 +59,7 @@ else
     </EditForm>
 }
 
-<div class="form-actions no-color esh-link-list" style="padding-top: 20px">
+<div class="form-actions no-color esh-link-list" style="padding-top: 20px; font-size: 18px;">
     <a href="@($"/shoppinglistitem/displaylist/0/{ShoppingListID}")" class="esh-link-item">
         Back to Shopping List
     </a>
@@ -69,9 +69,9 @@ else
     [Parameter]
     public int ShoppingListID { get; set; }
 
-    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
-    protected List<ShoppingList> shoppingLists;
-    protected string shoppingListID;
+    private ShoppingListItem shoppingListItem = new ShoppingListItem();
+    private List<ShoppingList> shoppingLists;
+    private string shoppingListID;
 
     protected override async Task OnInitializedAsync()
     {

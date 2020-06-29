@@ -7,13 +7,13 @@
 
 <h3>Edit Shopping Item</h3>
 
-<EditForm Model="shoppingListItem" OnValidSubmit="@EditShoppingItem">
+<EditForm Model="shoppingListItem" OnValidSubmit="@EditShoppingItem" style="font-size: 18px">
     <DataAnnotationsValidator />
 
     <div class="form-group">
         <label class="control-label col-md-2">Name</label>
         <div class="col-md-3">
-            <InputText class="form-control" @bind-Value="shoppingListItem.ItemName" />
+            <InputText style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.ItemName" />
             <ValidationMessage For="(() => shoppingListItem.ItemName)" />
         </div>
     </div>
@@ -21,7 +21,7 @@
     <div class="form-group">
         <label class="control-label col-md-2">Price</label>
         <div class="col-md-3">
-            <InputNumber class="form-control" @bind-Value="shoppingListItem.Price" />
+            <InputNumber style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.Price" />
             <ValidationMessage For="(() => shoppingListItem.Price)" />
         </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="form-group">
         <label class="control-label col-md-2">Qty</label>
         <div class="col-md-3">
-            <InputNumber class="form-control" @bind-Value="shoppingListItem.Quantity" />
+            <InputNumber style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.Quantity" />
             <ValidationMessage For="(() => shoppingListItem.Quantity)" />
         </div>
     </div>
@@ -37,7 +37,7 @@
     <button type="submit">Submit</button>
 </EditForm>
 
-<div class="form-actions no-color esh-link-list">
+<div class="form-actions no-color esh-link-list" style="padding-top: 20px; font-size: 18px;">
     <a href="@($"/shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
         Display Item
     </a>
@@ -51,7 +51,7 @@
     [Parameter]
     public int ShoppingListItemID { get; set; }
 
-    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+    private ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {

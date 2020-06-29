@@ -7,7 +7,7 @@
 
 <h3>Delete Shopping Item</h3>
 
-<div class="container">
+<div class="container" style="font-size: 18px">
     <div class="row">
         <dl class="col-md-6 dl-horizontal">
             <dt>
@@ -36,8 +36,8 @@
         </dl>
     </div>
 
-    <div class="form-actions no-color esh-link-list">
-        <button class="btn esh-button esh-button-primary" @onclick="DeleteShoppingItem">
+    <div class="form-actions no-color esh-link-list" style="font-size: 18px">
+        <button class="btn esh-button esh-button-primary" style="font-size: 18px;" @onclick="DeleteShoppingItem">
             Delete
         </button>
         |
@@ -51,7 +51,7 @@
     [Parameter]
     public int ShoppingListItemID { get; set; }
 
-    protected ShoppingListItem shoppingListItem = new ShoppingListItem();
+    private ShoppingListItem shoppingListItem = new ShoppingListItem();
 
     protected override async Task OnInitializedAsync()
     {

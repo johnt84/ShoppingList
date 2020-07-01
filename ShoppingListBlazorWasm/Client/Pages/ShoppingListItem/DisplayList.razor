@@ -6,7 +6,7 @@
 @using ShoppingListBlazorWasm.Client.Data
 @inject ShoppingListClient Client
 
-<h3>Shopping List</h3>
+<h3>Shopping List Items Maintenance</h3>
 
 <div class="form-actions no-color esh-link-list" style="padding-bottom: 20px; font-size: 18px;">
     <a href="@($"/shoppinglistitem/additem/{ShoppingListID}")" class="esh-link-item">
@@ -74,41 +74,56 @@ else
                     <th style="width: 100px; text-align: center;">
                         Item Cost
                     </th>
+                    <th style="width: 100px; text-align: center;">
+                        In Store Position
+                    </th>
                     <th style="width: 81px;"></th>
+                    <th style="width: 53px;"></th>
                     <th style="width: 53px;"></th>
                     <th style="width: 84px;"></th>
                 </tr>
                 @foreach (var shoppingListItem in shoppingListItems)
                 {
-                    <tr>
-                        <td>
-                            @shoppingListItem.ItemName
-                        </td>
-                        <td style="text-align: center">
-                            @shoppingListItem.Price
-                        </td>
-                        <td style="text-align: center">
-                            @shoppingListItem.Quantity
-                        </td>
-                        <td style="text-align: center">
-                            @(shoppingListItem.Price * @shoppingListItem.Quantity)
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Display
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/edititem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Edit
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@($"shoppinglistitem/deleteitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
+            <tr>
+                <td>
+                    @shoppingListItem.ItemName
+                </td>
+                <td style="text-align: center">
+                    @shoppingListItem.Price
+                </td>
+                <td style="text-align: center">
+                    @shoppingListItem.Quantity
+                </td>
+                <td style="text-align: center">
+                    @(shoppingListItem.Price * @shoppingListItem.Quantity)
+                </td>
+                <td style="text-align: center">
+                    @shoppingListItem.InStorePosition
+                </td>
+                <td>
+                    <a href="@($"shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                        Display
+                    </a>
+                </td>
+                <td>
+                    <a href="@($"shoppinglistitem/edititem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    @if (shoppingListItem.Quantity > 0)
+                    {
+                        <a href="@($"shoppinglistitem/moveitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                            Move
+                        </a>
+                    }
+                </td>
+                <td>
+                    <a href="@($"shoppinglistitem/deleteitem/{shoppingListItem.ShoppingListItemID}")" class="esh-table-link">
+                        Delete
+                    </a>
+                </td>
+            </tr>
                 }
                 <tr>
                     <td style="font-weight: bold;">

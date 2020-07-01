@@ -102,6 +102,24 @@ namespace ShoppingListBlazorWasm.Server.Services
             }
         }
 
+        public void Move(ShoppingListItem shoppingListItem)
+        {
+            using (IDbConnection connection = Connection)
+            {
+                string query = @"exec procShoppingListItemMove 
+                                        @shoppingListItemID, 
+                                        @inStorePosition";
+
+                try
+                {
+                    connection.Query<int>(query, shoppingListItem);
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+        }
+
         public void Delete(int shoppingListItemID)
         {
             using (IDbConnection connection = Connection)

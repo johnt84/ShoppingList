@@ -13,6 +13,7 @@ namespace ShoppingListBlazorWasm.Shared
         [Required]
         public string ItemName { get; set; }
 
+        public int InStorePosition { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public bool ItemPicked { get; set; }

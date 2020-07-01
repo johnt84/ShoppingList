@@ -9,6 +9,7 @@ namespace ShoppingListBlazorWasm.Server.Services
         public ShoppingListItem GetItem(int shoppingListItemID);
         public int Add(ShoppingListItem shoppingListItem);
         public void Update(ShoppingListItem shoppingListItem);
+        public void Move(ShoppingListItem shoppingListItem);
         public void Delete(int shoppingListItemID);
     }
 }

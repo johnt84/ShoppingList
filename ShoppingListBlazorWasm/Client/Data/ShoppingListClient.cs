@@ -63,11 +63,16 @@ namespace ShoppingListBlazorWasm.Client.Data
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task MoveShoppingListItem(ShoppingListItem shoppingListItem)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"{SHOPPING_LIST_ITEM_API_URL}/Move/", shoppingListItem);
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task DeleteShoppingListItem(int shoppingListItemID)
         {
             var response = await _httpClient.DeleteAsync($"{SHOPPING_LIST_ITEM_API_URL}/{shoppingListItemID}");
             response.EnsureSuccessStatusCode();
         }
-
     }
 }

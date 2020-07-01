@@ -42,6 +42,14 @@ namespace ShoppingListBlazorWasm.Server.Controllers
             return Ok();
         }
 
+        [HttpPut("Move")]
+        public IActionResult Move(ShoppingListItem shoppingListItem)
+        {
+            _shoppingListItemService.Move(shoppingListItem);
+
+            return Ok();
+        }
+
         [HttpDelete("{shoppingListItemID}")]
         public IActionResult Delete(int shoppingListItemID)
         {

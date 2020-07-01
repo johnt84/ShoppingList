@@ -152,7 +152,7 @@ else
         {
             shoppingListItems = await Client.GetShoppingListItems(ShoppingListID);
 
-            shoppingListItems = shoppingListItems.Where(x => x.Quantity > 0).ToList();
+            shoppingListItems = shoppingListItems.Where(x => x.Quantity > 0).OrderBy(x => x.InStorePosition).ToList();
 
             inStoreMessage = shoppingListItems.All(x => x.ItemPicked) ? "Go to checkouts" : "In Shop";
 

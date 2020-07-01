@@ -1,0 +1,83 @@
+﻿@page "/shoppinglistitem/moveitem/{ShoppingListItemID:int}"
+
+@using ShoppingListBlazorWasm.Shared
+@using ShoppingListBlazorWasm.Client.Data
+@inject ShoppingListClient Client
+@inject NavigationManager NavigationManager
+
+<h3>Move Shopping Item</h3>
+
+<div class="container" style="font-size: 18px">
+    <div class="row">
+        <dl class="col-md-6 dl-horizontal">
+            <dt>
+                Name
+            </dt>
+
+            <dd>
+                @shoppingListItem.ItemName
+            </dd>
+
+            <dt>
+                Price
+            </dt>
+
+            <dd>
+                @shoppingListItem.Price
+            </dd>
+
+            <dt>
+                Qty
+            </dt>
+
+            <dd>
+                @shoppingListItem.Quantity
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<EditForm Model="shoppingListItem" OnValidSubmit="@MoveShoppingItem" style="font-size: 18px">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label class="control-label col-md-2">In Store Position</label>
+        <div class="col-md-3">
+            <InputNumber style="font-size: 18px" class="form-control" @bind-Value="shoppingListItem.InStorePosition" />
+            <ValidationMessage For="(() => shoppingListItem.InStorePosition)" />
+        </div>
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+<div class="form-actions no-color esh-link-list" style="padding-top: 20px; font-size: 18px;">
+    <a href="@($"/shoppinglistitem/displayitem/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
+        Display Item
+    </a>
+    |
+    <a href="@($"/shoppinglistitem/displaylist/{shoppingListItem.ShoppingListItemID}")" class="esh-link-item">
+        Back to Shopping List
+    </a>
+</div>
+
+@code {
+    [Parameter]
+    public int ShoppingListItemID { get; set; }
+
+    private ShoppingListItem shoppingListItem = new ShoppingListItem();
+
+    protected override async Task OnInitializedAsync()
+    {
+        shoppingListItem = await Client.GetShoppingListItem(ShoppingListItemID);
+    }
+
+    private async void MoveShoppingItem()
+    {
+        if (shoppingListItem != null)
+        {
+            await Client.MoveShoppingListItem(shoppingListItem);
+            NavigationManager.NavigateTo($"ShoppingListItem/DisplayList/{shoppingListItem.ShoppingListItemID}");
+        }
+    }
+}

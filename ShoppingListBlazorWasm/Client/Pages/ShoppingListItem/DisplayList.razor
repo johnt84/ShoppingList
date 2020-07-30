@@ -6,6 +6,18 @@
 @using ShoppingListBlazorWasm.Client.Data
 @inject ShoppingListClient Client
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style>
+    .sort-th {
+        cursor: pointer;
+    }
+
+    .fa {
+        float: right;
+    }
+</style>
+
 <h3>Shopping List Items Maintenance</h3>
 
 <div class="form-actions no-color esh-link-list" style="padding-bottom: 20px; font-size: 18px;">
@@ -59,23 +71,31 @@ else
         {
             <label style="font-size: 20px;">Search Items:</label>
             <input style="font-size: 20px; margin-left: 10px;" @oninput="SearchItemsChanged" />
+
+            <label style="font-size: 20px; margin-left: 70px;">In Store View:</label>
+            <input style="font-size: 20px; margin-left: 10px;" id="chkShowInStoreView" type="checkbox"@onchange="@(() => ShowInStoreView())" />
             
-            <table style="font-size: 18px;">
+            <table class="table-hover" style="font-size: 18px;">
                 <tr>
-                    <th style="width: 171px;">
+                    <th class="sort-th" @onclick="@(() => SortTable("ItemName"))" style="width: 171px;">
                         Item
+                        <span class="fa @(SetSortIcon("ItemName"))"></span>
                     </th>
-                    <th style="width: 72px; text-align: center;">
+                    <th class="sort-th" @onclick="@(() => SortTable("Price"))" style="width: 72px; text-align: center;">
                         Price
+                        <span class="fa @(SetSortIcon("Price"))"></span>
                     </th>
-                    <th style="width: 40px; text-align: center;">
+                    <th class="sort-th" @onclick="@(() => SortTable("Quantity"))" style="width: 40px; text-align: center;">
                         Qty
+                        <span class="fa @(SetSortIcon("Quantity"))"></span>
                     </th>
-                    <th style="width: 100px; text-align: center;">
+                    <th class="sort-th" @onclick="@(() => SortTable("ItemCost"))" style="width: 100px; text-align: center;">
                         Item Cost
+                        <span class="fa @(SetSortIcon("ItemCost"))"></span>
                     </th>
-                    <th style="width: 100px; text-align: center;">
+                    <th class="sort-th" @onclick="@(() => SortTable("InStorePosition"))" style="width: 100px; text-align: center;">
                         In Store Position
+                        <span class="fa @(SetSortIcon("InStorePosition"))"></span>
                     </th>
                     <th style="width: 81px;"></th>
                     <th style="width: 53px;"></th>
@@ -149,6 +169,9 @@ else
     private List<ShoppingListItem> shoppingListItems;
     private ShoppingListItem shoppingListItem = new ShoppingListItem();
     private string shoppingListItemSearch;
+    private bool isSortedAscending;
+    private string activeSortColumn;
+    private bool inStoreView;
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,11 +204,65 @@ else
         if (!string.IsNullOrEmpty(shoppingListItemSearch))
         {
             var searchShoppingListItems = shoppingListItems
-                                            .Where(x => x.ItemName.ToLower().Contains(shoppingListItemSearch.ToLower()))
+                                            .Where(x => x.ItemName.ToLower().Contains(shoppingListItemSearch.ToLower())
+                                                || x.Quantity.ToString().ToLower().Contains(shoppingListItemSearch.ToLower())
+                                                || x.Price.ToString().ToLower().Contains(shoppingListItemSearch.ToLower())
+                                                || x.ItemCost.ToString().ToLower().Contains(shoppingListItemSearch.ToLower())
+                                                || x.InStorePosition.ToString().ToLower().Contains(shoppingListItemSearch.ToLower()))
                                             .OrderBy(x => x.ItemName)
                                             .ToList();
 
             shoppingListItems = searchShoppingListItems.Count > 0 ? searchShoppingListItems : shoppingListItems;
+        }
+    }
+
+    private async Task ShowInStoreView()
+    {
+        inStoreView = !inStoreView;
+
+        await RefreshShoppingListItems();
+    }
+
+    private async Task SortTable(string columnName)
+    {
+        await RefreshShoppingListItems();
+
+        bool clickedSameColumn = columnName == activeSortColumn;
+
+        isSortedAscending = clickedSameColumn ? !isSortedAscending : true;
+
+        if (isSortedAscending)
+        {
+            shoppingListItems = shoppingListItems
+                                    .OrderBy(x => x.GetType().GetProperty(columnName)
+                                    .GetValue(x, null))
+                                    .ToList();
+        }
+        else
+        {
+            shoppingListItems = shoppingListItems
+                                    .OrderByDescending(x => x.GetType().GetProperty(columnName)
+                                    .GetValue(x, null))
+                                    .ToList();
+        }
+
+        activeSortColumn = columnName;
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
         }
     }
 
@@ -195,7 +272,17 @@ else
         {
             shoppingListItems = await Client.GetShoppingListItems(ShoppingListID);
 
-            shoppingListItems = shoppingListItems.OrderBy(x => x.ItemName).ToList();
+            if (inStoreView)
+            {
+                shoppingListItems = shoppingListItems
+                                        .Where(x => x.Quantity > 0)
+                                        .OrderBy(x => x.InStorePosition)
+                                        .ToList();
+            }
+            else
+            {
+                shoppingListItems = shoppingListItems.OrderBy(x => x.ItemName).ToList();
+            }
         }
     }
 }
